@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parcel Scanner Pre-Configuration</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .selection-panel { background: white; padding: 30px; border-radius: 12px; max-width: 500px; margin: 0 auto; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .select-item { width: 100%; padding: 12px; margin: 10px 0 20px 0; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; }
+  </style>
+</head>
+<body>
+
+  <div id="sidebar-injector"></div>
+
+  <main class="main-content" id="mainContent">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <div>
+        <h1 style="font-size: 22px; font-weight: 700;">Scanner System Setup</h1>
+        <p style="font-size: 13px; color: #64748b;">Specify batch parameter contexts before activation</p>
+      </div>
+    </header>
+
+    <div class="selection-panel">
+      <form onsubmit="event.preventDefault(); window.location.href='scanner_camera.html?courier=' + encodeURIComponent(document.getElementById('courier').value);">
+        <label style="font-weight:600; font-size:14px;">Select Logistic Carrier Operator:</label>
+        <select id="courier" class="select-item">
+          <option value="DHL Express">DHL Express</option>
+          <option value="FedEx Routing">FedEx Routing</option>
+          <option value="BlueDart Logistics">BlueDart Logistics</option>
+        </select>
+        <button type="submit" class="collapse-expand" style="background:#2563eb; color:white; width:100%; padding:14px; font-weight:600; margin:0;">Initialize Scanning Environment</button>
+      </form>
+    </div>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/app-core.js"></script>
+</body>
+</html>
