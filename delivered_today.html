@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Today's Delivered Parcels</title>
+  <link rel="stylesheet" href="css/style.css"> <!-- Your compiled central application CSS -->
+</head>
+<body>
+
+  <!-- Layout Engine Hook Selection -->
+  <div id="sidebar-injector"></div>
+
+  <!-- Main View Container Context -->
+  <div class="main-content" id="mainContent">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()" aria-label="Toggle menu">☰</button>
+      <div class="page-info">
+        <div class="page-title">
+          <span>📦</span>
+          <span>Today's Delivered Parcels</span>
+          <span id="cacheIndicator" class="cache-indicator" style="display: none;">Cached</span>
+        </div>
+        <div class="page-subtitle">View all parcels delivered today with images</div>
+      </div>
+    </header>
+
+    <div class="content-wrapper">
+      <!-- Unique Local Content Content Node Grid Blocks -->
+    </div>
+  </div>
+
+  <!-- JavaScript Resource Pipeline Includes -->
+  <script src="js/app-core.js"></script>
+  <script src="js/pages/delivered-today.js"></script> <!-- Page-specific operational scripts -->
+</body>
+</html>
