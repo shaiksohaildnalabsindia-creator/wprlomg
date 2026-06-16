@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Parcel Entry</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .form-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; max-width: 600px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #334155; }
+    .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
+    .btn-submit { background: #2563eb; color: white; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn-submit:hover { background: #1d4ed8; }
+  </style>
+</head>
+<body>
+
+  <div id="sidebar-injector"></div>
+
+  <main class="main-content" id="mainContent">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <div>
+        <h1 style="font-size: 22px; font-weight: 700;">Manual Parcel Registry Entry</h1>
+        <p style="font-size: 13px; color: #64748b;">Log physical incoming shipping entries into databases</p>
+      </div>
+    </header>
+
+    <div class="form-box">
+      <form id="entryForm" onsubmit="event.preventDefault(); alert('Logged manual asset successfully.');">
+        <div class="form-group">
+          <label>Tracking Number Identifier</label>
+          <input type="text" class="form-control" placeholder="e.g. TRK984310" required>
+        </div>
+        <div class="form-group">
+          <label>Destination Target Point</label>
+          <input type="text" class="form-control" placeholder="Target Lab / Office Station" required>
+        </div>
+        <button type="submit" class="btn-submit">Add Parcel Entry</button>
+      </form>
+    </div>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/app-core.js"></script>
+</body>
+</html>
