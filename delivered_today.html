@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Today's Delivered Logistics</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .report-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.01); }
+    .report-table th, .report-table td { padding: 14px 20px; text-align: left; border-bottom: 1px solid #f1f5f9; }
+    .report-table th { background: #f8fafc; font-weight: 600; color: #475569; }
+  </style>
+</head>
+<body>
+
+  <div id="sidebar-injector"></div>
+
+  <main class="main-content" id="mainContent">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <div>
+        <h1 style="font-size: 22px; font-weight: 700;">Delivered Today Ledger</h1>
+        <p style="font-size: 13px; color: #64748b;">Live dynamic query tracking deliveries processed today</p>
+      </div>
+    </header>
+
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Tracking ID</th>
+          <th>Receiver Station</th>
+          <th>Status Flag</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>TRK-9024-X4</td>
+          <td>Main Bio-Lab Station A</td>
+          <td><span style="color:#16a34a; font-weight:600;">Success Verified</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/app-core.js"></script>
+</body>
+</html>
