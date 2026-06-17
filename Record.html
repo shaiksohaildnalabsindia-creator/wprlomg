@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Patient Records Directory with Evidence View</title>
+  <title>Patient Records Directory - Live Image Fetch Engine</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* Unique Layout Specific Formats for Record Display Matrices */
+    /* Specific Page Display Elements Layout Format */
     .controls-panel {
       background: white; padding: 20px; border-radius: 12px; margin-bottom: 24px;
       box-shadow: 0 2px 4px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; display: flex; gap: 16px; align-items: center;
@@ -16,7 +16,6 @@
       flex-grow: 1; padding: 12px 16px; border: 1px solid #cbd5e1; border-radius: 8px;
       font-size: 14px; outline: none; transition: border-color 0.2s;
     }
-
     .search-input:focus { border-color: #2563eb; }
 
     .table-container {
@@ -29,36 +28,45 @@
     .data-table th { background: #f8fafc; font-weight: 600; color: #475569; position: sticky; top: 0; }
 
     .sno-cell { font-weight: 600; color: #94a3b8; }
-    .tracking-link { color: #2563eb; font-weight: 600; cursor: pointer; text-decoration: underline; }
-    .tracking-link:hover { color: #1d4ed8; }
+    
+    /* Interactive Clickable Patient Identity Link Strings UI rules */
+    .interactive-name-link {
+      color: #2563eb;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .interactive-name-link:hover { color: #1d4ed8; }
     mark { background: #fef08a; color: #0f172a; padding: 1px 3px; border-radius: 4px; }
 
-    /* Interactive Embedded Layout Image Thumbnails Previewers */
-    .table-thumb-frame {
-      position: relative; width: 54px; height: 40px; border-radius: 6px; overflow: hidden;
-      cursor: pointer; border: 1px solid #cbd5e1; display: inline-block; transition: transform 0.2s; background: #f8fafc;
-    }
-    .table-thumb-frame:hover { transform: scale(1.08); }
-    .thumb-node-img { width: 100%; height: 100%; object-fit: cover; }
-    .micro-zoom-badge { position: absolute; bottom: 1px; right: 1px; font-size: 8px; background: rgba(15,23,42,0.7); color: white; padding: 1px 2px; border-radius: 3px; }
-
-    /* Modal System Layout Styles with Interactive Multi-media Previews */
+    /* Modal System Presentation Interface Containers Layout */
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6);
       display: flex; align-items: center; justify-content: center; z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.2s ease-in-out;
     }
-
     .modal-overlay.active { opacity: 1; visibility: visible; }
-    .modal-card { background: white; padding: 24px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); transform: scale(0.95); transition: transform 0.2s ease-in-out; }
+    .modal-card { background: white; padding: 24px; border-radius: 12px; width: 100%; max-width: 520px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); transform: scale(0.95); transition: transform 0.2s ease-in-out; }
     .modal-overlay.active .modal-card { transform: scale(1); }
+    
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-weight: 700; font-size: 18px; color: #0f172a; }
     .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #64748b; }
     
-    .modal-image-preview-pane {
-      width: 100%; height: 220px; background: #0f172a; border-radius: 8px; overflow: hidden;
-      margin-top: 15px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0;
+    /* Dynamic Image Listing Sandbox Panels Frames */
+    .fetched-image-listing-frame {
+      width: 100%; height: 260px; background: #0f172a; border-radius: 8px; overflow: hidden;
+      margin-top: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid #e2e8f0; position: relative;
     }
-    .modal-display-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .canvas-display-img { width: 100%; height: 100%; object-fit: contain; }
+    
+    /* Micro UI feedback animation states spinners */
+    .micro-loader-spinner {
+      border: 3px solid rgba(255, 255, 255, 0.1); width: 32px; height: 32px;
+      border-radius: 50%; border-left-color: #3b82f6; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     .loading-spinner { text-align: center; padding: 40px; color: #64748b; font-weight: 500; }
   </style>
@@ -72,14 +80,14 @@
       <button class="menu-btn" onclick="toggleSidebar()">☰</button>
       <div>
         <h1 style="font-size: 22px; font-weight: 700; color: #0f172a;">Audited Structural Logs Directory</h1>
-        <p style="font-size: 13px; color: #64748b;">Text records data indexing panel parameters context view</p>
+        <p style="font-size: 13px; color: #64748b;">Click on any patient name cell to pull structural confirmation images live from the database</p>
       </div>
     </header>
 
     <div class="controls-panel">
       <span>🔍</span>
-      <input type="text" id="searchInput" class="search-input" placeholder="Search patient name, invoice number, location, tracking barcode, or test options..." oninput="filterTable()">
-      <button class="collapse-expand" style="margin:0; background:#f1f5f9; font-weight:600; padding:10px 16px;" onclick="loadPatientTable(true)">Force Synchronize</button>
+      <input type="text" id="searchInput" class="search-input" placeholder="Search parameters index criteria by name, location, invoice ID strings..." oninput="filterTable()">
+      <button class="collapse-expand" style="margin:0; background:#f1f5f9; font-weight:600; padding:10px 16px;" onclick="loadPatientTable(true)">Refresh Records</button>
     </div>
 
     <div class="table-container">
@@ -88,11 +96,10 @@
         <thead>
           <tr>
             <th>S.No</th>
-            <th style="text-align: center; width: 90px;">Evidence</th>
+            <th>Patient Name (Click to Fetch Image)</th>
             <th>Sample Entry Date</th>
             <th>Collection Date</th>
             <th>Test Name</th>
-            <th>Patient Name</th>
             <th>Child Name</th>
             <th>Sample Type</th>
             <th>Consent Status</th>
@@ -110,13 +117,28 @@
   <div class="modal-overlay" id="patientModal" onclick="closeModal(event)">
     <div class="modal-card">
       <div class="modal-header">
-        <span id="modalPatientTitle">Patient Details</span>
+        <span id="modalPatientTitle">Patient Registry Information Scope</span>
         <button class="modal-close" onclick="closeModal(force=true)">×</button>
       </div>
-      <div id="modalContent" style="font-size: 14px; color: #334155; line-height: 1.6; max-height: 200px; overflow-y: auto; padding-right: 5px;">
+      
+      <div id="modalContent" style="font-size: 14px; color: #334155; line-height: 1.5; max-height: 160px; overflow-y: auto; padding-right: 5px;">
         </div>
-      <div id="modalImageContainer" class="modal-image-preview-pane" style="display: none;">
-        <img id="modalTargetImg" src="" alt="High resolution inspection data preview asset" class="modal-display-img" />
+      
+      <div class="fetched-image-listing-frame">
+        <div id="modalImageSpinner" style="display: none; flex-direction: column; align-items: center; gap: 10px; color: #94a3b8; font-size: 13px;">
+          <div class="micro-loader-spinner"></div>
+          <span>Querying binary image string from server...</span>
+        </div>
+        
+        <div id="modalImageError" style="display: none; color: #ef4444; font-size: 13px; text-align: center; padding: 20px;">
+          ⚠️ Verification image context missing or inaccessible for this index row.
+        </div>
+
+        <div id="modalImageEmpty" style="color: #64748b; font-size: 13px; font-style: italic; text-align: center;">
+          Select a profile link on the records index to call image payloads.
+        </div>
+
+        <img id="modalTargetImg" src="" alt="Live Fetched Package Evidence Preview Asset" class="canvas-display-img" style="display: none;" />
       </div>
     </div>
   </div>
@@ -132,13 +154,13 @@
     });
 
     /**
-     * Connect directly to your specific spreadsheet transaction execution web app
+     * Read primary textual configuration log sheets lines from the Google endpoint array
      */
     function loadPatientTable(forceRefresh = false) {
       const loadingIndicator = document.getElementById("loadingIndicator");
       const recordsTable = document.getElementById("recordsTable");
       
-      // Specifically target your updated image-serving API endpoint defined inside your core configuration variables module
+      // Specifically points to your assigned endpoint execution URL mapped inside your configuration array variables registry
       const targetReadUrl = APP_API_REGISTRY.parcelEntry;
 
       loadingIndicator.style.display = "block";
@@ -146,11 +168,10 @@
 
       fetch(targetReadUrl)
         .then(res => {
-          if (!res.ok) throw new Error("Data retrieval call rejected by spreadsheet app engine server routes.");
+          if (!res.ok) throw new Error("Data retrieval call dropped by host web application interface.");
           return res.json();
         })
         .then(data => {
-          // Normalize both envelope list properties configurations and flat arrays structures object patterns
           internalDataset = Array.isArray(data) ? data : (data.data || []);
           renderTableData(internalDataset);
           
@@ -158,27 +179,26 @@
           recordsTable.style.display = "table";
         })
         .catch(err => {
-          console.error("Database resolution error loop fault:", err);
-          loadingIndicator.innerHTML = `<span style="color:#ef4444;">Failed to read parcel sheet indices. Confirm Apps Script web-app permissions are set to 'Anyone'.</span>`;
+          console.error("Central spreadsheet data recovery fault:", err);
+          loadingIndicator.innerHTML = `<span style="color:#ef4444;">Connection timeout fault. Verify Apps Script workspace deployment accessibility parameters.</span>`;
         });
     }
 
     /**
-     * Map rows array components to structural HTML data sheet presentation elements
+     * Transpile rows metrics attributes data into semantic HTML cell configurations
      */
     function renderTableData(rows, searchTerm = "") {
       const tbody = document.getElementById("tableBody");
       tbody.innerHTML = "";
 
       if (rows.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; color:#94a3b8; padding:30px;">No operational logs records match the active parameter fields filters.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; color:#94a3b8; padding:30px;">No operational log tracks match the search filters parameters context.</td></tr>`;
         return;
       }
 
       rows.forEach((row, index) => {
         const tr = document.createElement("tr");
 
-        // Real-time matched criteria parameter string highlights closure utility
         const highlight = (textField) => {
           if (!textField) return "-";
           const str = textField.toString();
@@ -189,30 +209,18 @@
           return str.replace(regex, "<mark>$1</mark>");
         };
 
-        // Extract image attachment strings safely from both upper and lowercase object key maps
-        const imageStringToken = row["Image"] || row["imageData"] || row["url"] || null;
-        let thumbnailCellMarkup = `<span style="color:#cbd5e1; font-style:italic; font-size:11px;">No Image</span>`;
-
-        if (imageStringToken) {
-          thumbnailCellMarkup = `
-            <div class="table-thumb-frame" onclick="openModal(${index})">
-              <img src="${imageStringToken}" alt="Evidence thumb preview" class="thumb-node-img" loading="lazy" />
-              <span class="micro-zoom-badge">🔍</span>
-            </div>
-          `;
-        }
+        const rawNameValue = row["Patient name"] || row["patientName"] || "Walk-In Profile";
 
         tr.innerHTML = `
           <td class="sno-cell">${index + 1}</td>
-          <td style="text-align:center;">${thumbnailCellMarkup}</td>
+          <td>
+            <span class="interactive-name-link" onclick="executeLiveImageFetchCall(${index})">
+              👤 ${highlight(rawNameValue)}
+            </span>
+          </td>
           <td>${highlight(row["Sample Entry Date"] || row["date"] || row["Timestamp"])}</td>
           <td>${highlight(row["Collection Date"] || row["collectionDate"])}</td>
           <td>${highlight(row["Test name"] || row["testName"])}</td>
-          <td>
-            <span class="tracking-link" onclick="openModal(${index})">
-              ${highlight(row["Patient name"] || row["patientName"] || "Walk-In Profile")}
-            </span>
-          </td>
           <td>${highlight(row["Patient child name"] || row["childName"])}</td>
           <td>${highlight(row["sample type"] || row["sampleType"])}</td>
           <td>${highlight(row["Consent Received / Not"] || row["consent"])}</td>
@@ -225,8 +233,79 @@
     }
 
     /**
-     * Search string optimization parameters lookup loops
+     * Triggered immediately when a name link is clicked. Calls individual row media targets dynamically.
      */
+    function executeLiveImageFetchCall(rowIndexSignature) {
+      const selectedRecord = internalDataset[rowIndexSignature];
+      if (!selectedRecord) return;
+
+      // 1. Setup metadata strings views values inside the panel framework card
+      document.getElementById("modalPatientTitle").textContent = selectedRecord["Patient name"] || selectedRecord["patientName"] || "Inspect Details Scope";
+      
+      let metaDetailsHtml = "";
+      for (const [key, value] of Object.entries(selectedRecord)) {
+        // Skip listing raw base64 contents inside textual loop containers tags properties
+        if (value && !["Image", "imageData", "url"].includes(key)) {
+          metaDetailsHtml += `<p style="margin-bottom:5px;"><strong>${key}:</strong> ${value}</p>`;
+        }
+      }
+      document.getElementById("modalContent").innerHTML = metaDetailsHtml;
+
+      // 2. Open up modal UI container view frame immediately to provide low-latency interaction feedback
+      document.getElementById("patientModal").classList.add("active");
+
+      // 3. Configure local visual asset nodes display toggle properties switchboards
+      const imgNode = document.getElementById("modalTargetImg");
+      const spinner = document.getElementById("modalImageSpinner");
+      const errorBar = document.getElementById("modalImageError");
+      const emptyLabel = document.getElementById("modalImageEmpty");
+
+      imgNode.style.display = "none";
+      errorBar.style.display = "none";
+      emptyLabel.style.display = "none";
+      spinner.style.display = "flex"; // Active loader presentation
+
+      // Retrieve Tracking Reference code target to execute contextual lookup filters blocks matches checks
+      const targetedTrackingId = selectedRecord["Tracking no"] || selectedRecord["trackingNo"] || "";
+
+      // Construct look-forward network endpoint URL targeting the file-serving sheets application script wrapper route context
+      const imageFetchApiEndpointUrl = APP_API_REGISTRY.parcelEntry;
+
+      /**
+       * On-Demand Fetch Action Pipeline Engine
+       */
+      fetch(imageFetchApiEndpointUrl)
+        .then(response => {
+          if (!response.ok) throw new Error("API stream connection fault dropped payload packet frames.");
+          return response.json();
+        })
+        .then(completeCollectionPayload => {
+          const matchingRows = Array.isArray(completeCollectionPayload) ? completeCollectionPayload : (completeCollectionPayload.data || []);
+          
+          // Cross-compare rows parameters fields criteria to discover image match
+          const specificMatchedRow = matchingRows.find(item => 
+            (item["Tracking no"] || item["trackingNo"]) === targetedTrackingId
+          );
+
+          // Extract Base64 or image URL key value signatures safely
+          const liveDiscoveredImageString = specificMatchedRow ? (specificMatchedRow["Image"] || specificMatchedRow["imageData"] || specificMatchedRow["url"]) : null;
+
+          if (liveDiscoveredImageString && liveDiscoveredImageString.length > 30) {
+            // Assign Base64 stream content variables payload straight to source properties rendering tags
+            imgNode.src = liveDiscoveredImageString;
+            spinner.style.display = "none";
+            imgNode.style.display = "block"; // Render image successfully
+          } else {
+            throw new Error("Target row binary imagery descriptor signature blank.");
+          }
+        })
+        .catch(error => {
+          console.error("Dynamic on-demand media query fetch collapsed:", error);
+          spinner.style.display = "none";
+          errorBar.style.display = "block"; // Render fallback operational notice
+        });
+    }
+
     function filterTable() {
       const query = document.getElementById("searchInput").value.trim().toLowerCase();
       if (!query) {
@@ -243,44 +322,11 @@
       renderTableData(matchingRecords, query);
     }
 
-    /**
-     * Open detailed overlay preview popup panel cards configurations
-     */
-    function openModal(index) {
-      const record = internalDataset[index];
-      if (!record) return;
-
-      document.getElementById("modalPatientTitle").textContent = record["Patient name"] || record["patientName"] || "Log File Entry Description";
-      
-      let summaryHtml = "";
-      // Loop through row fields and print non-image strings metadata
-      for (const [key, value] of Object.entries(record)) {
-        if (value && key !== "Image" && key !== "imageData" && key !== "url") {
-          summaryHtml += `<p style="margin-bottom:6px;"><strong>${key}:</strong> ${value}</p>`;
-        }
-      }
-
-      document.getElementById("modalContent").innerHTML = summaryHtml;
-
-      // Handle structural verification imagery layers rendering allocations check
-      const embeddedImageValue = record["Image"] || record["imageData"] || record["url"] || null;
-      const imgContainer = document.getElementById("modalImageContainer");
-      const targetImg = document.getElementById("modalTargetImg");
-
-      if (embeddedImageValue) {
-        targetImg.src = embeddedImageValue;
-        imgContainer.style.display = "flex";
-      } else {
-        targetImg.src = "";
-        imgContainer.style.display = "none";
-      }
-
-      document.getElementById("patientModal").classList.add("active");
-    }
-
     function closeModal(event, force = false) {
       if (force || event.target === document.getElementById("patientModal")) {
         document.getElementById("patientModal").classList.remove("active");
+        // Clear binary source buffers completely on close to conserve local device viewport threads memory memory allocations
+        document.getElementById("modalTargetImg").src = "";
       }
     }
   </script>
