@@ -1,9 +1,21 @@
-// Centralized Web App Infrastructure Access Variables
-const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyDO5TlgcFHew195ivE1STKTenIeIGw2rvU",
-  authDomain: "dnaindia-9bdd7.firebaseapp.com",
-  projectId: "dnaindia-9bdd7",
-  storageBucket: "dnaindia-9bdd7.firebasestorage.app",
-  messagingSenderId: "1080314065286",
-  appId: "1:1080314065286:web:a4fe82cbb08854d839bc07"
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBm-whygga0ngDfbusXU6qY-pHasVi5BYY",
+  authDomain: "parcelpro-240.firebaseapp.com",
+  projectId: "parcelpro-240",
+  storageBucket: "parcelpro-240.firebasestorage.app",
+  messagingSenderId: "433028766527",
+  appId: "1:433028766527:web:26655485b14d23093fd18a",
+  measurementId: "G-FNPDWER90V"
 };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
