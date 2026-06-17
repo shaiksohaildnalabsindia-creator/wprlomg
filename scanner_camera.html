@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Barcode Scanner Video Feed</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .video-viewport { background: #0f172a; border-radius: 12px; position: relative; width: 100%; max-width: 640px; margin: 0 auto; height: 480px; overflow: hidden; display: flex; align-items: center; justify-content: center; color: white; }
+    .scanner-reticle { position: absolute; border: 4px solid #3b82f6; width: 70%; height: 50%; box-sizing: border-box; border-radius: 8px; animation: pulse 2s infinite linear; }
+    @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+  </style>
+</head>
+<body>
+
+  <div id="sidebar-injector"></div>
+
+  <main class="main-content" id="mainContent">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <div>
+        <h1 style="font-size: 22px; font-weight: 700;">Live Camera Processing Scan</h1>
+        <p style="font-size: 13px; color: #64748b;">Position standard clear bar-codes inside matching central zones</p>
+      </div>
+    </header>
+
+    <div class="video-viewport">
+      <div class="scanner-reticle"></div>
+      <p style="z-index: 10; font-size: 14px; background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 20px;">[ Optical Video Target Capture Simulation Area ]</p>
+    </div>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/app-core.js"></script>
+</body>
+</html>
