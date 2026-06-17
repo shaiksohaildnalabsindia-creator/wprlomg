@@ -3,11 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Upload Sample Verification Images</title>
+  <title>Upload Verification Imagery Data</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .drop-zone { border: 3px dashed #cbd5e1; background: white; padding: 40px; text-align: center; border-radius: 12px; cursor: pointer; transition: background 0.2s; }
-    .drop-zone:hover { background: #f8fafc; border-color: #3b82f6; }
+    /* Specific Page Layout Presentation Elements for Dropzones and Thumbnails */
+    .upload-container-card {
+      background: white; padding: 30px; border-radius: 12px; border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); max-width: 750px; margin: 0 auto;
+    }
+    
+    .drop-zone-area {
+      border: 3px dashed #cbd5e1; background: #f8fafc; padding: 40px 20px;
+      text-align: center; border-radius: 12px; cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .drop-zone-area.dragover {
+      background: #eff6ff; border-color: #2563eb; transform: scale(0.99);
+    }
+    .drop-zone-icon { font-size: 48px; margin-bottom: 12px; display: inline-block; }
+    .drop-zone-text { font-size: 15px; font-weight: 600; color: #334155; }
+    .drop-zone-subtext { font-size: 12px; color: #64748b; margin-top: 6px; }
+
+    /* Structural Grid System for Local Media Previews */
+    .preview-thumbnail-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 16px; margin-top: 24px;
+    }
+    .thumb-preview-card {
+      background: #fff; border-radius: 8px; border: 1px solid #e2e8f0;
+      overflow: hidden; position: relative; aspect-ratio: 1 / 1;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; align-items: center; justify-content: center;
+    }
+    .thumb-actual-img { width: 100%; height: 100%; object-fit: cover; }
+    .thumb-remove-btn {
+      position: absolute; top: 4px; right: 4px; background: rgba(239, 68, 68, 0.9);
+      color: white; border: none; width: 22px; height: 22px; border-radius: 50%;
+      font-size: 12px; font-weight: bold; cursor: pointer; display: flex;
+      align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .thumb-remove-btn:hover { background: #dc2626; }
+
+    /* Operational Button Interaction Bars layout styles */
+    .actions-button-group {
+      display: flex; gap: 12px; margin-top: 24px; justify-content: flex-end;
+      border-top: 1px solid #f1f5f9; padding-top: 20px;
+    }
+    .btn-functional-action {
+      padding: 12px 24px; font-size: 14px; font-weight: 600; border-radius: 8px;
+      cursor: pointer; transition: all 0.15s; border: none; display: flex; align-items: center; gap: 8px;
+    }
+    .btn-functional-action.secondary { background: #f1f5f9; color: #475569; }
+    .btn-functional-action.secondary:hover { background: #e2e8f0; color: #0f172a; }
+    .btn-functional-action.primary { background: #2563eb; color: white; }
+    .btn-functional-action.primary:hover { background: #1d4ed8; }
+    .btn-functional-action:disabled { background: #94a3b8 !important; color: white !important; cursor: not-allowed; }
+
+    /* Global Dynamic Visual Status Toasts elements alerts */
+    .alert-toast-banner {
+      padding: 14px 18px; border-radius: 8px; margin-top: 20px;
+      font-size: 14px; font-weight: 500; display: none;
+    }
+    .alert-toast-banner.success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+    .alert-toast-banner.error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
   </style>
 </head>
 <body>
@@ -16,21 +73,242 @@
 
   <main class="main-content" id="mainContent">
     <header class="topbar">
-      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <button class="menu-btn" onclick="toggleSidebar()" aria-label="Open Navigation Layer Side Panel">☰</button>
       <div>
-        <h1 style="font-size: 22px; font-weight: 700;">Upload Verification Imagery Data</h1>
-        <p style="font-size: 13px; color: #64748b;">Drag and drop multiple validation photos into the system</p>
+        <h1 style="font-size: 22px; font-weight: 700; color: #0f172a;">Upload Verification Imagery Data</h1>
+        <p style="font-size: 13px; color: #64748b;">Batch push digital delivery confirmation photos straight to Google Sheets and Drive repositories</p>
       </div>
     </header>
 
-    <div class="drop-zone" id="dropZone" onclick="alert('File Explorer browser dialogue invocation.');">
-      <div style="font-size: 48px; margin-bottom: 10px;">📸</div>
-      <p style="font-weight: 600; color: #334155;">Drag & Drop package confirmation imagery files here</p>
-      <p style="font-size: 12px; color: #64748b; margin-top: 5px;">Supports PNG, JPEG up to 15MB configurations per file matrix</p>
+    <div class="upload-container-card">
+      
+      <input type="file" id="nativeHiddenFileInput" accept="image/*" multiple style="display: none;">
+
+      <div class="drop-zone-area" id="dropZoneContainer">
+        <span class="drop-zone-icon">📸</span>
+        <div class="drop-zone-text">Drag and drop confirmation imagery files here</div>
+        <div class="drop-zone-subtext">or click anywhere inside this box to browse local disk storage partitions</div>
+        <div style="font-size: 11px; margin-top: 8px; color: #94a3b8; font-weight: 500;">Supports PNG, JPEG up to 10MB matrix limits per item (Max 15 items per batch)</div>
+      </div>
+
+      <div class="preview-thumbnail-grid" id="thumbnailPreviewGrid"></div>
+
+      <div class="actions-button-group">
+        <button class="btn-functional-action secondary" id="clearStagingGridBtn" disabled>Clear Staging Grid</button>
+        <button class="btn-functional-action primary" id="triggerBroadcastUploadBtn" disabled>
+          <span>🚀</span>
+          <span id="uploadBtnLabelText">Broadcast Files To Cloud</span>
+        </button>
+      </div>
+
+      <div id="statusNotificationBanner" class="alert-toast-banner"></div>
+
     </div>
   </main>
 
   <script src="js/config.js"></script>
   <script src="js/app-core.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      let stagedFilesCollectionMemory = [];
+      const MAXIMUM_BATCH_COUNT_LIMIT = 15;
+      const INDIVIDUAL_FILE_SIZE_CEILING_BYTES = 10 * 1024 * 1024; // 10MB individual safety bounds check
+
+      const dropZone = document.getElementById("dropZoneContainer");
+      const nativeInput = document.getElementById("nativeHiddenFileInput");
+      const previewGrid = document.getElementById("thumbnailPreviewGrid");
+      const uploadBtn = document.getElementById("triggerBroadcastUploadBtn");
+      const clearBtn = document.getElementById("clearStagingGridBtn");
+      const alertBanner = document.getElementById("statusNotificationBanner");
+      const labelText = document.getElementById("uploadBtnLabelText");
+
+      // Bind interaction hooks to wire up local storage dialogue browsers
+      dropZone.addEventListener("click", () => nativeInput.click());
+      nativeInput.addEventListener("change", (e) => ingestSelectedFilesStream(e.target.files));
+
+      // Handle structural Drag Over visual canvas transformation feedback actions
+      dropZone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        dropZone.classList.add("dragover");
+      });
+
+      ["dragleave", "dragend"].forEach(type => {
+        dropZone.addEventListener(type, () => dropZone.classList.remove("dragover"));
+      });
+
+      dropZone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        dropZone.classList.remove("dragover");
+        ingestSelectedFilesStream(e.dataTransfer.files);
+      });
+
+      // Clear layout elements button binding
+      clearBtn.addEventListener("click", purgeStagingAreaClean);
+
+      // Submit execution button binding
+      uploadBtn.addEventListener("click", executeMediaBatchUploadBroadcast);
+
+      /**
+       * Validate file array collections and append into active layout runtime environments memory arrays
+       */
+      function ingestSelectedFilesStream(fileList) {
+        alertBanner.style.display = "none";
+
+        if (stagedFilesCollectionMemory.length + fileList.length > MAXIMUM_BATCH_COUNT_LIMIT) {
+          displayOperationAlert(`Batch limit breached. You can only append a max total of ${MAXIMUM_BATCH_COUNT_LIMIT} items per batch upload operation loop.`, "error");
+          return;
+        }
+
+        Array.from(fileList).forEach(file => {
+          if (!file.type.startsWith("image/")) {
+            console.warn(`Ingestion dropped. Non-image file criteria descriptor format rejected: ${file.name}`);
+            return;
+          }
+          if (file.size > INDIVIDUAL_FILE_SIZE_CEILING_BYTES) {
+            displayOperationAlert(`File size floor limit exceeded: [${file.name}]. Individual files must sit strictly below the 10MB memory weight constraints boundary line.`, "error");
+            return;
+          }
+
+          // Append file context safely into structural data arrays memory allocations
+          stagedFilesCollectionMemory.push(file);
+          
+          // Generate immediate sandboxed blob URL strings to instantiate fast local layout rendering checks
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const cardNode = document.createElement("div");
+            cardNode.className = "thumb-preview-card";
+            cardNode.dataset.fileNameSignature = file.name;
+
+            cardNode.innerHTML = `
+              <button class="thumb-remove-btn" type="button" title="Remove image context">&times;</button>
+              <img src="${event.target.result}" alt="Staged photo thumbnail layout" class="thumb-actual-img" />
+            `;
+
+            // Bind individual dynamic removal handlers loops directly onto deletion nodes
+            cardNode.querySelector(".thumb-remove-btn").addEventListener("click", () => {
+              removeSingleStagedItem(file.name, cardNode);
+            });
+
+            previewGrid.appendChild(cardNode);
+            refreshInteractiveButtonStates();
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function removeSingleStagedItem(targetFileName, HTMLCardElementNode) {
+        stagedFilesCollectionMemory = stagedFilesCollectionMemory.filter(f => f.name !== targetFileName);
+        HTMLCardElementNode.remove();
+        refreshInteractiveButtonStates();
+      }
+
+      function purgeStagingAreaClean() {
+        stagedFilesCollectionMemory = [];
+        previewGrid.innerHTML = "";
+        nativeInput.value = "";
+        alertBanner.style.display = "none";
+        refreshInteractiveButtonStates();
+      }
+
+      function refreshInteractiveButtonStates() {
+        const payloadActive = stagedFilesCollectionMemory.length > 0;
+        uploadBtn.disabled = !payloadActive;
+        clearBtn.disabled = !payloadActive;
+      }
+
+      /**
+       * Convert image data into Base64 strings asynchronously and broadcast payloads to Google Apps Script endpoints
+       */
+      function executeMediaBatchUploadBroadcast() {
+        uploadBtn.disabled = true;
+        clearBtn.disabled = true;
+        alertBanner.style.display = "none";
+
+        let completedSucceededCount = 0;
+        labelText.textContent = `Uploading items: (0 / ${stagedFilesCollectionMemory.length})...`;
+
+        // Map array contents straight into sequence arrays chains execution loops pipelines
+        const asynchronousUploadJobsChain = stagedFilesCollectionMemory.map(fileObject => {
+          return new Promise((resolve, reject) => {
+            const dataBase64Reader = new FileReader();
+            
+            dataBase64Reader.onload = () => {
+              const base64DataPayloadString = dataBase64Reader.result;
+              
+              // Structure transaction metrics context definitions mapping configurations properties
+              const transportPacketPayload = {
+                "Image": base64DataPayloadString,
+                "Tracking no": `MANUAL-UPLOAD-${Math.floor(100000 + Math.random() * 900000)}`, // Explicit barcode placeholder tracking signifier tags
+                "Patient name": "Bulk Media Staging Entry Portfolio",
+                "Sample Entry Date": new Date().toISOString()
+              };
+
+              // Safely read the targeted production URL endpoint key from js/config.js object mappings
+              const backendUploadExecutionRouteUrl = APP_API_REGISTRY.sampleImageUpload;
+
+              fetch(backendUploadExecutionRouteUrl, {
+                method: "POST",
+                mode: "cors",
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(transportPacketPayload)
+              })
+              .then(res => {
+                if (!res.ok) throw new Error("Data serialization stream packet dropped by AppsScript host environment engines.");
+                return res.json();
+              })
+              .then(parsedResult => {
+                completedSucceededCount++;
+                labelText.textContent = `Uploading items: (${completedSucceededCount} / ${stagedFilesCollectionMemory.length})...`;
+                resolve(parsedResult);
+              })
+              .catch(err => {
+                console.error(`Asset processing dispatch crash on element [${fileObject.name}]:`, err);
+                reject(err);
+              });
+            };
+
+            dataBase64Reader.readAsDataURL(fileObject);
+          });
+        });
+
+        // Fire off all file transport promise operations concurrently inside safe global threads matrices monitors
+        Promise.allSettled(asynchronousUploadJobsChain)
+          .then(resultsCollection => {
+            const fullyPassedCount = resultsCollection.filter(r => r.status === "fulfilled").length;
+            
+            if (fullyPassedCount === stagedFilesCollectionMemory.length) {
+              displayOperationAlert(`Success: ${fullyPassedCount} verification evidence photos successfully written into Google Drive & Sheet storage repositories.`, "success");
+              purgeStagingAreaClean();
+            } else {
+              displayOperationAlert(`Batch resolution warning: (${fullyPassedCount} passed successfully, ${stagedFilesCollectionMemory.length - fullyPassedCount} failed data synchronizations). Check console error traces.`, "error");
+              refreshInteractiveButtonStates();
+            }
+          })
+          .catch(criticalGlobalCrashError => {
+            displayOperationAlert(`Critical media array broadcast failure code: ${criticalGlobalCrashError.message}`, "error");
+            refreshInteractiveButtonStates();
+          })
+          .finally(() => {
+            labelText.textContent = "Broadcast Files To Cloud";
+          });
+      }
+
+      function displayOperationAlert(messageText, styleVariantType) {
+        alertBanner.textContent = messageText;
+        alertBanner.className = `alert-toast-banner ${styleVariantType}`;
+        alertBanner.style.display = "block";
+      }
+
+      // Local layout accessibility exit shortcuts rules escape patterns
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && stagedFilesCollectionMemory.length > 0) {
+          if(confirm("Wipe all active local unsaved staged file preview rows?")) {
+            purgeStagingAreaClean();
+          }
+        }
+      });
+    });
+  </script>
 </body>
 </html>
