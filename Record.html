@@ -24,7 +24,17 @@
     </div>
   </main>
 
-  <script src="js/config.js"></script>
-  <script src="js/app-core.js"></script>
+  <script 
+    function loadPatientTable() {
+      const readUrl = APP_API_REGISTRY.patientRecords;
+
+      fetch(readUrl)
+        .then(res => res.json())
+        .then(data => {
+          // Logic to parse rows into your layout table engine...
+          console.log("Database entries retrieved:", data);
+        });
+    }
+  </script>
 </body>
 </html>
