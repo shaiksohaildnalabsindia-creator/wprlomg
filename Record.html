@@ -3,8 +3,150 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Comprehensive System Patient Records</title>
+  <title>Patient Records Directory</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Unique Dashboard Specific Styles for Record Display Matrices */
+    .controls-panel {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      border: 1px solid #e2e8f0;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .search-input {
+      flex-grow: 1;
+      padding: 12px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: #2563eb;
+    }
+
+    .table-container {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      overflow-x: auto;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    .data-table th, .data-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid #f1f5f9;
+      white-space: nowrap;
+    }
+
+    .data-table th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: #475569;
+      position: sticky;
+      top: 0;
+    }
+
+    .sno-cell {
+      font-weight: 600;
+      color: #94a3b8;
+    }
+
+    .tracking-link {
+      color: #2563eb;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .tracking-link:hover {
+      color: #1d4ed8;
+    }
+
+    mark {
+      background: #fef08a;
+      color: #0f172a;
+      padding: 1px 3px;
+      border-radius: 4px;
+    }
+
+    /* Modal System Layout Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+      transform: scale(0.95);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-weight: 700;
+      font-size: 18px;
+      color: #0f172a;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #64748b;
+    }
+
+    .loading-spinner {
+      text-align: center;
+      padding: 40px;
+      color: #64748b;
+      font-weight: 500;
+    }
+  </style>
 </head>
 <body>
 
