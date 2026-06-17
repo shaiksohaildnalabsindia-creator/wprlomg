@@ -3,15 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Parcel Entry</title>
+  <title>Parcel Manual Entry</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .form-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; max-width: 600px; }
-    .form-group { margin-bottom: 20px; }
-    .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #334155; }
-    .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
-    .btn-submit { background: #2563eb; color: white; padding: 12px 24px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-    .btn-submit:hover { background: #1d4ed8; }
+    /* Page Specific Form Presentation Components Grid Elements */
+    .form-wrapper-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+      border: 1px solid #e2e8f0;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .form-header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #eff6ff;
+      color: #2563eb;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .form-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-group-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group-item label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .form-field-control {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #0f172a;
+      outline: none;
+      background: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-field-control:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .form-field-control::placeholder {
+      color: #94a3b8;
+    }
+
+    .btn-action-submit {
+      background: #2563eb;
+      color: white;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 10px;
+    }
+
+    .btn-action-submit:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-action-submit:active {
+      transform: scale(0.98);
+    }
+
+    .btn-action-submit:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    /* Informational Status Feedback Elements */
+    .status-toast {
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .status-toast.success {
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+
+    .status-toast.error {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
@@ -20,29 +136,188 @@
 
   <main class="main-content" id="mainContent">
     <header class="topbar">
-      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <button class="menu-btn" onclick="toggleSidebar()" aria-label="Toggle Navigation Layout">☰</button>
       <div>
-        <h1 style="font-size: 22px; font-weight: 700;">Manual Parcel Registry Entry</h1>
-        <p style="font-size: 13px; color: #64748b;">Log physical incoming shipping entries into databases</p>
+        <h1 style="font-size: 22px; font-weight: 700; color: #0f172a;">Manual Parcel Registry Entry</h1>
+        <p style="font-size: 13px; color: #64748b;">Log physical incoming shipping entries into Google Sheets storage directories</p>
       </div>
     </header>
 
-    <div class="form-box">
-      <form id="entryForm" onsubmit="event.preventDefault(); alert('Logged manual asset successfully.');">
-        <div class="form-group">
-          <label>Tracking Number Identifier</label>
-          <input type="text" class="form-control" placeholder="e.g. TRK984310" required>
+    <div class="form-wrapper-box">
+      <div class="form-header-badge">
+        <span>📝</span>
+        <span>Secure Registry Link Active</span>
+      </div>
+
+      <form id="parcelRegistryForm" novalidate>
+        <div class="form-grid">
+          
+          <div class="form-group-item">
+            <label for="trackingNoInput">Tracking Number / Barcode Content</label>
+            <input 
+              type="text" 
+              id="trackingNoInput" 
+              class="form-field-control" 
+              placeholder="e.g. TRK984310A7" 
+              required 
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="form-group-item">
+            <label for="locationInput">Destination Target Location Hub</label>
+            <input 
+              type="text" 
+              id="locationInput" 
+              class="form-field-control" 
+              placeholder="e.g. Main Diagnostic Lab - Station Alpha" 
+              required
+            />
+          </div>
+
+          <div class="form-group-item">
+            <label for="patientNameInput">Patient Reference Identity Name</label>
+            <input 
+              type="text" 
+              id="patientNameInput" 
+              class="form-field-control" 
+              placeholder="e.g. Johnathan Doe" 
+              required
+            />
+          </div>
+
+          <button type="submit" id="submitFormBtn" class="btn-action-submit">
+            <span>📦</span>
+            <span id="btnText">Commit Registry Entry</span>
+          </button>
+
         </div>
-        <div class="form-group">
-          <label>Destination Target Point</label>
-          <input type="text" class="form-control" placeholder="Target Lab / Office Station" required>
-        </div>
-        <button type="submit" class="btn-submit">Add Parcel Entry</button>
       </form>
+
+      <div id="feedbackAlert" class="status-toast"></div>
     </div>
   </main>
 
   <script src="js/config.js"></script>
   <script src="js/app-core.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const entryForm = document.getElementById("parcelRegistryForm");
+      const trackingInput = document.getElementById("trackingNoInput");
+      const locationInput = document.getElementById("locationInput");
+      const patientInput = document.getElementById("patientNameInput");
+
+      // Realtime input filtering utility: Auto-convert tracking strings to uppercase layout structures
+      trackingInput.addEventListener("input", () => {
+        trackingInput.value = trackingInput.value.toUpperCase().trim();
+      });
+
+      // Accessibility Keyboard Optimization: Advance input focus to next block upon pressing 'Enter'
+      const inputFormSequence = [trackingInput, locationInput, patientInput];
+      inputFormSequence.forEach((input, index) => {
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            event.preventDefault(); // Stop default browser submission hooks
+            if (index < inputFormSequence.length - 1) {
+              inputFormSequence[index + 1].focus(); // Advance focus to next element block
+            } else {
+              executeFormRegistrySubmission(); // Trigger submit flow on final block
+            }
+          }
+        });
+      });
+
+      // Bind submission interceptor
+      entryForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        executeFormRegistrySubmission();
+      });
+
+      /**
+       * Asynchronous script engine to execute form validation and data payload broadcast pipelines
+       */
+      function executeFormRegistrySubmission() {
+        const trackingVal = trackingInput.value.trim();
+        const locationVal = locationInput.value.trim();
+        const patientVal = patientInput.value.trim();
+        
+        const submitBtn = document.getElementById("submitFormBtn");
+        const btnText = document.getElementById("btnText");
+        const feedback = document.getElementById("feedbackAlert");
+
+        // Simple local validations structure checks
+        if (!trackingVal || !locationVal || !patientVal) {
+          displaySubmissionToast("All entry configuration fields are mandatory parameters.", "error");
+          return;
+        }
+
+        // Lock form interaction states during network transaction windows
+        submitBtn.disabled = true;
+        btnText.textContent = "Broadcasting to Google Sheets Server...";
+        feedback.style.display = "none";
+
+        // Generate data object payload structural mapping constraints
+        const payloadData = {
+          "Tracking no": trackingVal,
+          "Location": locationVal,
+          "Patient name": patientVal,
+          "Sample Entry Date": new Date().toISOString() // Dynamic date validation tracking insertion stamp
+        };
+
+        // Query the centralized URL index key mapped inside js/config.js
+        const targetsExecutionEndpoint = APP_API_REGISTRY.parcelEntry;
+
+        fetch(targetsExecutionEndpoint, {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8" // Handshake matches AppsScript standard parameters parsing
+          },
+          body: JSON.stringify(payloadData)
+        })
+        .then(response => {
+          if (!response.ok) throw new Error("Server engine script rejected transaction parameters context.");
+          return response.json();
+        })
+        .then(result => {
+          if (result.result === "success" || result.status === "success" || result.success) {
+            displaySubmissionToast("Asset entry logged successfully in Google Sheets Database.", "success");
+            entryForm.reset(); // Wipe fields cleanly upon transactional resolution loop closures
+            trackingInput.focus();
+          } else {
+            throw new Error(result.message || "Spreadsheet interface transaction fault.");
+          }
+        })
+        .catch(error => {
+          console.error("Manual Entry Pipeline Fault Encountered:", error);
+          displaySubmissionToast("Network pipeline write error: " + error.message, "error");
+        })
+        .finally(() => {
+          // Unlock button interface properties safely
+          submitBtn.disabled = false;
+          btnText.textContent = "Commit Registry Entry";
+        });
+      }
+
+      /**
+       * System Toast render notifications display utility helper closures
+       */
+      function displaySubmissionToast(message, type) {
+        const feedback = document.getElementById("feedbackAlert");
+        feedback.textContent = message;
+        feedback.className = `status-toast ${type}`;
+        feedback.style.display = "block";
+      }
+
+      // Local layout cleanup shortcuts handlers
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          entryForm.reset();
+          feedback.style.display = "none";
+        }
+      });
+    });
+  </script>
 </body>
 </html>
