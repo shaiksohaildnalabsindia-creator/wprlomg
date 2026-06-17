@@ -3,8 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Total Registry Summaries</title>
+  <title>Global Cumulative Operations Ledger</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Specific Layout Presentation Components for Advanced Data Sheets views */
+    .controls-panel {
+      background: white; padding: 20px; border-radius: 12px; margin-bottom: 24px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; display: flex; gap: 16px; align-items: center;
+    }
+    .search-box { flex-grow: 1; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
+    .search-box:focus { border-color: #2563eb; }
+
+    /* Analytical Metric Counter Grid Blocks styles */
+    .metrics-summary-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .metric-micro-card {
+      background: white; padding: 16px 20px; border-radius: 8px; border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+    }
+    .metric-label { font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; letter-spacing: 0.02em; }
+    .metric-total-value { font-size: 24px; font-weight: 700; color: #0f172a; margin-top: 4px; }
+
+    /* Structural responsive table views cards frames layout */
+    .table-viewport-card { background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow-x: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+    .report-data-sheet { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+    .report-data-sheet th, .report-data-sheet td { padding: 14px 20px; border-bottom: 1px solid #f1f5f9; white-space: nowrap; }
+    .report-data-sheet th { background: #f8fafc; font-weight: 600; color: #475569; position: sticky; top: 0; }
+    
+    /* Interactive visual media elements indicators codes */
+    .img-action-thumbnail { position: relative; width: 56px; height: 42px; border-radius: 6px; overflow: hidden; cursor: pointer; border: 1px solid #cbd5e1; margin: 0; display: inline-block; transition: transform 0.2s; background: #f8fafc; }
+    .img-action-thumbnail:hover { transform: scale(1.06); }
+    .thumb-render-img { width: 100%; height: 100%; object-fit: cover; }
+    .zoom-indicator-icon { position: absolute; bottom: 1px; right: 2px; font-size: 9px; background: rgba(15,23,42,0.7); color: white; padding: 1px 3px; border-radius: 4px; pointer-events: none; }
+    mark { background: #fef08a; padding: 1px 3px; border-radius: 4px; color: #0f172a; }
+
+    /* Advanced Interactive Image Manipulation Lightbox Modals Frame Styles */
+    .lightbox-backdrop-blur { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.9); display: flex; align-items: center; justify-content: center; z-index: 5000; opacity: 0; visibility: hidden; transition: all 0.2s ease; }
+    .lightbox-backdrop-blur.active { opacity: 1; visibility: visible; }
+    .lightbox-canvas-frame { background: white; padding: 20px; border-radius: 12px; max-width: 90%; max-width: 750px; width: 100%; display: flex; flex-direction: column; position: relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+    .canvas-close-trigger { position: absolute; top: 15px; right: 20px; background: none; border: none; color: #64748b; font-size: 28px; cursor: pointer; line-height: 1; }
+    .canvas-close-trigger:hover { color: #0f172a; }
+    
+    .interactive-viewer-viewport { position: relative; width: 100%; height: 450px; background: #0f172a; border-radius: 8px; margin: 15px 0; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .manipulation-image-node { max-width: 100%; max-height: 100%; object-fit: contain; cursor: grab; transition: transform 0.05s ease-out; transform-origin: center center; user-select: none; -webkit-user-drag: none; }
+    .manipulation-image-node:active { cursor: grabbing; }
+    
+    .viewer-control-dashboard { display: flex; justify-content: center; gap: 12px; align-items: center; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; }
+    .dashboard-tool-btn { background: white; border: 1px solid #cbd5e1; padding: 8px 14px; font-size: 13px; font-weight: 600; color: #475569; border-radius: 6px; cursor: pointer; transition: all 0.15s; }
+    .dashboard-tool-btn:hover { background: #f1f5f9; color: #0f172a; border-color: #94a3b8; }
+  </style>
 </head>
 <body>
 
@@ -12,19 +63,306 @@
 
   <main class="main-content" id="mainContent">
     <header class="topbar">
-      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <button class="menu-btn" onclick="toggleSidebar()" aria-label="Toggle Side Workspace Shell Panel">☰</button>
       <div>
-        <h1 style="font-size: 22px; font-weight: 700;">Total Operations Ledger Matrix</h1>
-        <p style="font-size: 13px; color: #64748b;">Comprehensive long-tail log database auditing</p>
+        <h1 style="font-size: 22px; font-weight: 700; color: #0f172a;">All Logged Operations Ledger</h1>
+        <p style="font-size: 13px; color: #64748b;">Comprehensive aggregate log analysis tracking all scanned system parcels</p>
       </div>
     </header>
 
-    <div style="background:white; padding:24px; border-radius:12px; color:#475569;">
-      Comprehensive aggregate table visualizations mount point context module logic target placeholder pipeline.
+    <div class="metrics-summary-strip">
+      <div class="metric-micro-card">
+        <div class="metric-label">Gross Total Scans</div>
+        <div class="metric-total-value" id="statGrossTotal">--</div>
+      </div>
+      <div class="metric-micro-card">
+        <div class="metric-label">Photo Verified Entries</div>
+        <div class="metric-total-value" id="statMediaTotal">--</div>
+      </div>
+      <div class="metric-micro-card">
+        <div class="metric-label">Text Logs Registries</div>
+        <div class="metric-total-value" id="statTextTotal">--</div>
+      </div>
+    </div>
+
+    <div class="controls-panel">
+      <span>🔍</span>
+      <input type="text" id="globalSearchInput" class="search-box" placeholder="Search system logs by matching user names, invoice tags, barcode digits, routing vectors...">
+      <button class="collapse-expand" style="margin:0; background:#f1f5f9; font-weight:600; padding:10px 16px;" onclick="syncLedgerDataSet(true)">Force Synchronize</button>
+    </div>
+
+    <div class="table-viewport-card">
+      <div id="loadingSheetSpinner" style="padding:50px; text-align:center; color:#64748b; font-weight:500;">Reading centralized long-tail ledger streams data metrics...</div>
+      <table class="report-data-sheet" id="ledgerReportTable" style="display: none;">
+        <thead>
+          <tr>
+            <th style="width: 50px;">Index</th>
+            <th>Tracking/Barcode ID</th>
+            <th>Patient Name Registry</th>
+            <th>Processing Target Station</th>
+            <th style="text-align: center; width: 140px;">Validation Evidence</th>
+          </tr>
+        </thead>
+        <tbody id="ledgerTableBody">
+          </tbody>
+      </table>
     </div>
   </main>
 
+  <div class="lightbox-backdrop-blur" id="advancedLightbox" onclick="if(event.target === this) shutAdvancedViewer();">
+    <div class="lightbox-canvas-frame">
+      <button class="canvas-close-trigger" onclick="shutAdvancedViewer()">×</button>
+      <h3 id="viewerHeaderLabel" style="font-size:16px; font-weight:700; color:#0f172a;">Evidence Inspection View</h3>
+      
+      <div class="interactive-viewer-viewport" id="viewerTrackpad">
+        <img src="" id="canvasTargetImg" alt="High Resolution Asset Zoom Canvas" class="manipulation-image-node" />
+      </div>
+
+      <div class="viewer-control-dashboard">
+        <button class="dashboard-tool-btn" onclick="executeZoomChange(0.25)">Zoom In (+)</button>
+        <button class="dashboard-tool-btn" onclick="executeZoomChange(-0.25)">Zoom Out (-)</button>
+        <button class="dashboard-tool-btn" onclick="resetCanvasEngineTransforms()">Reset Layout</button>
+        <button class="dashboard-tool-btn" style="background:#0f172a; color:white; border:none;" onclick="triggerNativeFullscreenView()">Fullscreen</button>
+      </div>
+    </div>
+  </div>
+
   <script src="js/config.js"></script>
   <script src="js/app-core.js"></script>
+
+  <script>
+    let primaryLedgerArray = [];
+    const CACHE_STORAGE_ID = "cumulative_all_parcels_cache";
+    const LIFE_THRESHOLD_MS = 180000; // 3 minute localized storage cache lifecycle window
+
+    // Advanced Transform State Properties Management Scope Variables
+    let currentScaleFactor = 1;
+    let horizontalPanOffset = 0;
+    let verticalPanOffset = 0;
+    let isMouseDraggingActive = false;
+    let startingMouseXCoordinate = 0;
+    let startingMouseYCoordinate = 0;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      syncLedgerDataSet();
+      setupInteractiveCanvasEvents();
+
+      document.getElementById("globalSearchInput").addEventListener("input", filterReportDataSheet);
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && document.getElementById("advancedLightbox").classList.contains("active")) {
+          shutAdvancedViewer();
+        }
+      });
+    });
+
+    /**
+     * Read system-wide transactional registry indices from Google Apps Script Web App endpoints
+     */
+    function syncLedgerDataSet(bypassLocalCache = false) {
+      const spinner = document.getElementById("loadingSheetSpinner");
+      const table = document.getElementById("ledgerReportTable");
+      const targetQueryEndpoint = APP_API_REGISTRY.totalSamples;
+
+      spinner.style.display = "block";
+      table.style.display = "none";
+
+      if (!bypassLocalCache) {
+        const matchingCacheString = localStorage.getItem(CACHE_STORAGE_ID);
+        if (matchingCacheString) {
+          const schema = JSON.parse(matchingCacheString);
+          if (Date.now() - schema.timestamp < LIFE_THRESHOLD_MS) {
+            console.log("Central cumulative database cache intercept matched. Building layout maps.");
+            primaryLedgerArray = schema.data;
+            processAndDrawReportMatrix(primaryLedgerArray);
+            return;
+          }
+        }
+      }
+
+      fetch(targetQueryEndpoint)
+        .then(res => {
+          if (!res.ok) throw new Error("Data retrieval call rejected by cloud endpoint infrastructure.");
+          return res.json();
+        })
+        .then(payload => {
+          primaryLedgerArray = Array.isArray(payload) ? payload : (payload.data || []);
+          
+          localStorage.setItem(CACHE_STORAGE_ID, JSON.stringify({
+            timestamp: Date.now(),
+            data: primaryLedgerArray
+          }));
+
+          processAndDrawReportMatrix(primaryLedgerArray);
+        })
+        .catch(err => {
+          console.error("Ledger acquisition engine runtime crash:", err);
+          spinner.textContent = "Data connection timeout. Please check your configurations deployment connections.";
+        });
+    }
+
+    /**
+     * Transpile JavaScript records array entries to HTML element structures
+     */
+    function processAndDrawReportMatrix(records, matchesFilterQuery = "") {
+      const spinner = document.getElementById("loadingSheetSpinner");
+      const table = document.getElementById("ledgerReportTable");
+      const tbody = document.getElementById("ledgerTableBody");
+
+      tbody.innerHTML = "";
+      spinner.style.display = "none";
+      table.style.display = "table";
+
+      // Execute live descriptive structural counters analytics tab updates
+      calculateSummaryMetricsStrip(records);
+
+      if (records.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:40px; color:#94a3b8; font-weight:500;">No log history registry tracks match the query criteria parameters.</td></tr>`;
+        return;
+      }
+
+      records.forEach((row, idx) => {
+        const tr = document.createElement("tr");
+
+        const wrap = (val) => {
+          if (!val) return "-";
+          const str = val.toString();
+          if (!matchesFilterQuery) return str;
+          const rg = new RegExp(`(${matchesFilterQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, "gi");
+          return str.replace(rg, "<mark>$1</mark>");
+        };
+
+        const imagePayload = row["Image"] || row["imageData"] || row["url"] || null;
+        let controlCellMarkup = `<span style="color:#cbd5e1; font-style:italic; font-size:12px;">No Image Token</span>`;
+
+        if (imagePayload) {
+          const barcodeEscaped = (row["Tracking no"] || row["trackingNo"] || "Asset").replace(/'/g, "\\'");
+          controlCellMarkup = `
+            <div class="img-action-thumbnail" onclick="launchAdvancedViewer('${imagePayload}', '${barcodeEscaped}')">
+              <img src="${imagePayload}" alt="Evidence thumbnail" class="thumb-render-img" loading="lazy" />
+              <span class="zoom-indicator-icon">Inspect 🔍</span>
+            </div>
+          `;
+        }
+
+        tr.innerHTML = `
+          <td style="color:#94a3b8; font-weight:600;">${idx + 1}</td>
+          <td style="font-family:monospace; font-weight:700; color:#0f172a;">${wrap(row["Tracking no"] || row["trackingNo"])}</td>
+          <td>${wrap(row["Patient name"] || row["patientName"] || "Walk-In Profile")}</td>
+          <td>${wrap(row["Location"] || row["location"])}</td>
+          <td style="text-align:center;">${controlCellMarkup}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function calculateSummaryMetricsStrip(sourceArray) {
+      const grossCount = sourceArray.length;
+      let photoValidatedCount = 0;
+      let rawTextLogCount = 0;
+
+      sourceArray.forEach(item => {
+        if (item["Image"] || item["imageData"] || item["url"]) {
+          photoValidatedCount++;
+        } else {
+          rawTextLogCount++;
+        }
+      });
+
+      document.getElementById("statGrossTotal").textContent = grossCount;
+      document.getElementById("statMediaTotal").textContent = photoValidatedCount;
+      document.getElementById("statTextTotal").textContent = rawTextLogCount;
+    }
+
+    function filterReportDataSheet() {
+      const criteria = document.getElementById("globalSearchInput").value.trim().toLowerCase();
+
+      if (!criteria) {
+        processAndDrawReportMatrix(primaryLedgerArray);
+        return;
+      }
+
+      const matchRows = primaryLedgerArray.filter(item => {
+        return Object.values(item).some(cell => 
+          cell && cell.toString().toLowerCase().includes(criteria)
+        );
+      });
+
+      processAndDrawReportMatrix(matchRows, criteria);
+    }
+
+    /**
+     * Advanced Canvas Image Viewer Manipulation Engine Implementations
+     */
+    function launchAdvancedViewer(sourceUrlString, keyTokenString) {
+      const backdrop = document.getElementById("advancedLightbox");
+      const canvasImg = document.getElementById("canvasTargetImg");
+      const title = document.getElementById("viewerHeaderLabel");
+
+      canvasImg.src = sourceUrlString;
+      title.textContent = `Evidence Processing Verification Scope: ${keyTokenString}`;
+      
+      resetCanvasEngineTransforms();
+      backdrop.classList.add("active");
+    }
+
+    function shutAdvancedViewer() {
+      document.getElementById("advancedLightbox").classList.remove("active");
+    }
+
+    function executeZoomChange(deltaScaleVal) {
+      currentScaleFactor = Math.min(Math.max(0.5, currentScaleFactor + deltaScaleVal), 4);
+      applyTransformationMatrixStyles();
+    }
+
+    function resetCanvasEngineTransforms() {
+      currentScaleFactor = 1;
+      horizontalPanOffset = 0;
+      verticalPanOffset = 0;
+      applyTransformationMatrixStyles();
+    }
+
+    function applyTransformationMatrixStyles() {
+      const node = document.getElementById("canvasTargetImg");
+      node.style.transform = `translate(${horizontalPanOffset}px, ${verticalPanOffset}px) scale(${currentScaleFactor})`;
+    }
+
+    function setupInteractiveCanvasEvents() {
+      const pad = document.getElementById("viewerTrackpad");
+      const node = document.getElementById("canvasTargetImg");
+
+      // Implement mouse wheel scroll zooming vectors detection overrides safely
+      pad.addEventListener("wheel", (event) => {
+        event.preventDefault();
+        const factor = event.deltaY < 0 ? 0.15 : -0.15;
+        executeZoomChange(factor);
+      }, { passive: false });
+
+      // Click-and-Drag Pan event structural rules handlers bounds
+      node.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        isMouseDraggingActive = true;
+        startingMouseXCoordinate = e.clientX - horizontalPanOffset;
+        startingMouseYCoordinate = e.clientY - verticalPanOffset;
+      });
+
+      window.addEventListener("mousemove", (e) => {
+        if (!isMouseDraggingActive) return;
+        horizontalPanOffset = e.clientX - startingMouseXCoordinate;
+        verticalPanOffset = e.clientY - startingMouseYCoordinate;
+        applyTransformationMatrixStyles();
+      });
+
+      window.addEventListener("mouseup", () => {
+        isMouseDraggingActive = false;
+      });
+    }
+
+    function triggerNativeFullscreenView() {
+      const node = document.getElementById("canvasTargetImg");
+      if (node.requestFullscreen) node.requestFullscreen();
+      else if (node.webkitRequestFullscreen) node.webkitRequestFullscreen();
+      else if (node.msRequestFullscreen) node.msRequestFullscreen();
+    }
+  </script>
 </body>
 </html>
