@@ -3,149 +3,64 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Patient Records Directory</title>
+  <title>Patient Records Directory with Evidence View</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* Unique Dashboard Specific Styles for Record Display Matrices */
+    /* Unique Layout Specific Formats for Record Display Matrices */
     .controls-panel {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 24px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-      border: 1px solid #e2e8f0;
-      display: flex;
-      gap: 16px;
-      align-items: center;
+      background: white; padding: 20px; border-radius: 12px; margin-bottom: 24px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; display: flex; gap: 16px; align-items: center;
     }
 
     .search-input {
-      flex-grow: 1;
-      padding: 12px 16px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s;
+      flex-grow: 1; padding: 12px 16px; border: 1px solid #cbd5e1; border-radius: 8px;
+      font-size: 14px; outline: none; transition: border-color 0.2s;
     }
 
-    .search-input:focus {
-      border-color: #2563eb;
-    }
+    .search-input:focus { border-color: #2563eb; }
 
     .table-container {
-      background: white;
-      border-radius: 12px;
-      border: 1px solid #e2e8f0;
-      overflow-x: auto;
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+      background: white; border-radius: 12px; border: 1px solid #e2e8f0;
+      overflow-x: auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
     }
 
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      text-align: left;
-      font-size: 14px;
-    }
+    .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+    .data-table th, .data-table td { padding: 14px 18px; border-bottom: 1px solid #f1f5f9; white-space: nowrap; vertical-align: middle; }
+    .data-table th { background: #f8fafc; font-weight: 600; color: #475569; position: sticky; top: 0; }
 
-    .data-table th, .data-table td {
-      padding: 14px 18px;
-      border-bottom: 1px solid #f1f5f9;
-      white-space: nowrap;
-    }
+    .sno-cell { font-weight: 600; color: #94a3b8; }
+    .tracking-link { color: #2563eb; font-weight: 600; cursor: pointer; text-decoration: underline; }
+    .tracking-link:hover { color: #1d4ed8; }
+    mark { background: #fef08a; color: #0f172a; padding: 1px 3px; border-radius: 4px; }
 
-    .data-table th {
-      background: #f8fafc;
-      font-weight: 600;
-      color: #475569;
-      position: sticky;
-      top: 0;
+    /* Interactive Embedded Layout Image Thumbnails Previewers */
+    .table-thumb-frame {
+      position: relative; width: 54px; height: 40px; border-radius: 6px; overflow: hidden;
+      cursor: pointer; border: 1px solid #cbd5e1; display: inline-block; transition: transform 0.2s; background: #f8fafc;
     }
+    .table-thumb-frame:hover { transform: scale(1.08); }
+    .thumb-node-img { width: 100%; height: 100%; object-fit: cover; }
+    .micro-zoom-badge { position: absolute; bottom: 1px; right: 1px; font-size: 8px; background: rgba(15,23,42,0.7); color: white; padding: 1px 2px; border-radius: 3px; }
 
-    .sno-cell {
-      font-weight: 600;
-      color: #94a3b8;
-    }
-
-    .tracking-link {
-      color: #2563eb;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-
-    .tracking-link:hover {
-      color: #1d4ed8;
-    }
-
-    mark {
-      background: #fef08a;
-      color: #0f172a;
-      padding: 1px 3px;
-      border-radius: 4px;
-    }
-
-    /* Modal System Layout Styles */
+    /* Modal System Layout Styles with Interactive Multi-media Previews */
     .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(15, 23, 42, 0.6);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.2s ease-in-out;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6);
+      display: flex; align-items: center; justify-content: center; z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.2s ease-in-out;
     }
 
-    .modal-overlay.active {
-      opacity: 1;
-      visibility: visible;
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal-card { background: white; padding: 24px; border-radius: 12px; width: 100%; max-width: 500px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); transform: scale(0.95); transition: transform 0.2s ease-in-out; }
+    .modal-overlay.active .modal-card { transform: scale(1); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-weight: 700; font-size: 18px; color: #0f172a; }
+    .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #64748b; }
+    
+    .modal-image-preview-pane {
+      width: 100%; height: 220px; background: #0f172a; border-radius: 8px; overflow: hidden;
+      margin-top: 15px; display: flex; align-items: center; justify-content: center; border: 1px solid #e2e8f0;
     }
+    .modal-display-img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-    .modal-card {
-      background: white;
-      padding: 24px;
-      border-radius: 12px;
-      width: 100%;
-      max-width: 450px;
-      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
-      transform: scale(0.95);
-      transition: transform 0.2s ease-in-out;
-    }
-
-    .modal-overlay.active .modal-card {
-      transform: scale(1);
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      font-weight: 700;
-      font-size: 18px;
-      color: #0f172a;
-    }
-
-    .modal-close {
-      background: none;
-      border: none;
-      font-size: 20px;
-      cursor: pointer;
-      color: #64748b;
-    }
-
-    .loading-spinner {
-      text-align: center;
-      padding: 40px;
-      color: #64748b;
-      font-weight: 500;
-    }
+    .loading-spinner { text-align: center; padding: 40px; color: #64748b; font-weight: 500; }
   </style>
 </head>
 <body>
@@ -156,15 +71,15 @@
     <header class="topbar">
       <button class="menu-btn" onclick="toggleSidebar()">☰</button>
       <div>
-        <h1 style="font-size: 22px; font-weight: 700;">Audited Structural Logs Directory</h1>
+        <h1 style="font-size: 22px; font-weight: 700; color: #0f172a;">Audited Structural Logs Directory</h1>
         <p style="font-size: 13px; color: #64748b;">Text records data indexing panel parameters context view</p>
       </div>
     </header>
 
     <div class="controls-panel">
       <span>🔍</span>
-      <input type="text" id="searchInput" class="search-input" placeholder="Search patient name, invoice number, location, or tracking id..." oninput="filterTable()">
-      <button class="collapse-expand" style="margin:0; background:#f1f5f9; font-weight:600; padding:10px 16px;" onclick="loadPatientTable(true)">Force Refresh</button>
+      <input type="text" id="searchInput" class="search-input" placeholder="Search patient name, invoice number, location, tracking barcode, or test options..." oninput="filterTable()">
+      <button class="collapse-expand" style="margin:0; background:#f1f5f9; font-weight:600; padding:10px 16px;" onclick="loadPatientTable(true)">Force Synchronize</button>
     </div>
 
     <div class="table-container">
@@ -173,6 +88,7 @@
         <thead>
           <tr>
             <th>S.No</th>
+            <th style="text-align: center; width: 90px;">Evidence</th>
             <th>Sample Entry Date</th>
             <th>Collection Date</th>
             <th>Test Name</th>
@@ -197,8 +113,11 @@
         <span id="modalPatientTitle">Patient Details</span>
         <button class="modal-close" onclick="closeModal(force=true)">×</button>
       </div>
-      <div id="modalContent" style="font-size: 14px; color: #334155; line-height: 1.8;">
+      <div id="modalContent" style="font-size: 14px; color: #334155; line-height: 1.6; max-height: 200px; overflow-y: auto; padding-right: 5px;">
         </div>
+      <div id="modalImageContainer" class="modal-image-preview-pane" style="display: none;">
+        <img id="modalTargetImg" src="" alt="High resolution inspection data preview asset" class="modal-display-img" />
+      </div>
     </div>
   </div>
 
@@ -212,21 +131,26 @@
       loadPatientTable();
     });
 
+    /**
+     * Connect directly to your specific spreadsheet transaction execution web app
+     */
     function loadPatientTable(forceRefresh = false) {
       const loadingIndicator = document.getElementById("loadingIndicator");
       const recordsTable = document.getElementById("recordsTable");
-      const readUrl = APP_API_REGISTRY.patientRecords;
+      
+      // Specifically target your updated image-serving API endpoint defined inside your core configuration variables module
+      const targetReadUrl = APP_API_REGISTRY.parcelEntry;
 
       loadingIndicator.style.display = "block";
       recordsTable.style.display = "none";
 
-      fetch(readUrl)
+      fetch(targetReadUrl)
         .then(res => {
-          if (!res.ok) throw new Error("Data pipeline request dropped by script engine.");
+          if (!res.ok) throw new Error("Data retrieval call rejected by spreadsheet app engine server routes.");
           return res.json();
         })
         .then(data => {
-          // Normalize both possible structural arrays returned from Google Sheet parsers
+          // Normalize both envelope list properties configurations and flat arrays structures object patterns
           internalDataset = Array.isArray(data) ? data : (data.data || []);
           renderTableData(internalDataset);
           
@@ -234,26 +158,29 @@
           recordsTable.style.display = "table";
         })
         .catch(err => {
-          console.error("Database fetch operation fault:", err);
-          loadingIndicator.textContent = "Failed to load database logs. Verify Google deployment connectivity parameters.";
+          console.error("Database resolution error loop fault:", err);
+          loadingIndicator.innerHTML = `<span style="color:#ef4444;">Failed to read parcel sheet indices. Confirm Apps Script web-app permissions are set to 'Anyone'.</span>`;
         });
     }
 
+    /**
+     * Map rows array components to structural HTML data sheet presentation elements
+     */
     function renderTableData(rows, searchTerm = "") {
       const tbody = document.getElementById("tableBody");
       tbody.innerHTML = "";
 
       if (rows.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; color:#94a3b8; padding:30px;">No diagnostic records match the active parameter queries.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; color:#94a3b8; padding:30px;">No operational logs records match the active parameter fields filters.</td></tr>`;
         return;
       }
 
       rows.forEach((row, index) => {
         const tr = document.createElement("tr");
 
-        // Dynamic highlight utility wrap closures inside functional loops
+        // Real-time matched criteria parameter string highlights closure utility
         const highlight = (textField) => {
-          if (!textField) return "";
+          if (!textField) return "-";
           const str = textField.toString();
           if (!searchTerm) return str;
           
@@ -262,17 +189,31 @@
           return str.replace(regex, "<mark>$1</mark>");
         };
 
+        // Extract image attachment strings safely from both upper and lowercase object key maps
+        const imageStringToken = row["Image"] || row["imageData"] || row["url"] || null;
+        let thumbnailCellMarkup = `<span style="color:#cbd5e1; font-style:italic; font-size:11px;">No Image</span>`;
+
+        if (imageStringToken) {
+          thumbnailCellMarkup = `
+            <div class="table-thumb-frame" onclick="openModal(${index})">
+              <img src="${imageStringToken}" alt="Evidence thumb preview" class="thumb-node-img" loading="lazy" />
+              <span class="micro-zoom-badge">🔍</span>
+            </div>
+          `;
+        }
+
         tr.innerHTML = `
           <td class="sno-cell">${index + 1}</td>
-          <td>${highlight(row["Sample Entry Date"] || row["date"])}</td>
+          <td style="text-align:center;">${thumbnailCellMarkup}</td>
+          <td>${highlight(row["Sample Entry Date"] || row["date"] || row["Timestamp"])}</td>
           <td>${highlight(row["Collection Date"] || row["collectionDate"])}</td>
           <td>${highlight(row["Test name"] || row["testName"])}</td>
           <td>
             <span class="tracking-link" onclick="openModal(${index})">
-              ${highlight(row["Patient name"] || row["patientName"] || "Unknown Target")}
+              ${highlight(row["Patient name"] || row["patientName"] || "Walk-In Profile")}
             </span>
           </td>
-          <td>${highlight(row["Patient child name"] || row["childName"] || "-")}</td>
+          <td>${highlight(row["Patient child name"] || row["childName"])}</td>
           <td>${highlight(row["sample type"] || row["sampleType"])}</td>
           <td>${highlight(row["Consent Received / Not"] || row["consent"])}</td>
           <td>${highlight(row["Location"] || row["location"])}</td>
@@ -283,6 +224,9 @@
       });
     }
 
+    /**
+     * Search string optimization parameters lookup loops
+     */
     function filterTable() {
       const query = document.getElementById("searchInput").value.trim().toLowerCase();
       if (!query) {
@@ -299,20 +243,38 @@
       renderTableData(matchingRecords, query);
     }
 
+    /**
+     * Open detailed overlay preview popup panel cards configurations
+     */
     function openModal(index) {
       const record = internalDataset[index];
       if (!record) return;
 
-      document.getElementById("modalPatientTitle").textContent = record["Patient name"] || record["patientName"] || "Record Specification";
+      document.getElementById("modalPatientTitle").textContent = record["Patient name"] || record["patientName"] || "Log File Entry Description";
       
       let summaryHtml = "";
+      // Loop through row fields and print non-image strings metadata
       for (const [key, value] of Object.entries(record)) {
-        if(value) {
-          summaryHtml += `<p><strong>${key}:</strong> ${value}</p>`;
+        if (value && key !== "Image" && key !== "imageData" && key !== "url") {
+          summaryHtml += `<p style="margin-bottom:6px;"><strong>${key}:</strong> ${value}</p>`;
         }
       }
 
       document.getElementById("modalContent").innerHTML = summaryHtml;
+
+      // Handle structural verification imagery layers rendering allocations check
+      const embeddedImageValue = record["Image"] || record["imageData"] || record["url"] || null;
+      const imgContainer = document.getElementById("modalImageContainer");
+      const targetImg = document.getElementById("modalTargetImg");
+
+      if (embeddedImageValue) {
+        targetImg.src = embeddedImageValue;
+        imgContainer.style.display = "flex";
+      } else {
+        targetImg.src = "";
+        imgContainer.style.display = "none";
+      }
+
       document.getElementById("patientModal").classList.add("active");
     }
 
