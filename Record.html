@@ -19,21 +19,165 @@
       </div>
     </header>
 
-    <div style="background:white; padding:30px; border-radius:12px; border:1px solid #e2e8f0; font-size:14px; color:#475569;">
-      Textual data logs database reporting view container targets render directly here.
+    <div class="controls-panel">
+      <span>🔍</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="Search patient name, invoice number, location, or tracking id..." oninput="filterTable()">
+      <button class="collapse-expand" style="margin:0; background:#f1f5f9; font-weight:600; padding:10px 16px;" onclick="loadPatientTable(true)">Force Refresh</button>
+    </div>
+
+    <div class="table-container">
+      <div id="loadingIndicator" class="loading-spinner">Connecting to Google Apps Script Server Engines...</div>
+      <table class="data-table" id="recordsTable" style="display: none;">
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Sample Entry Date</th>
+            <th>Collection Date</th>
+            <th>Test Name</th>
+            <th>Patient Name</th>
+            <th>Child Name</th>
+            <th>Sample Type</th>
+            <th>Consent Status</th>
+            <th>Location</th>
+            <th>Invoice No</th>
+            <th>Tracking No</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          </tbody>
+      </table>
     </div>
   </main>
 
-  <script 
-    function loadPatientTable() {
+  <div class="modal-overlay" id="patientModal" onclick="closeModal(event)">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span id="modalPatientTitle">Patient Details</span>
+        <button class="modal-close" onclick="closeModal(force=true)">×</button>
+      </div>
+      <div id="modalContent" style="font-size: 14px; color: #334155; line-height: 1.8;">
+        </div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/app-core.js"></script>
+
+  <script>
+    let internalDataset = [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadPatientTable();
+    });
+
+    function loadPatientTable(forceRefresh = false) {
+      const loadingIndicator = document.getElementById("loadingIndicator");
+      const recordsTable = document.getElementById("recordsTable");
       const readUrl = APP_API_REGISTRY.patientRecords;
 
+      loadingIndicator.style.display = "block";
+      recordsTable.style.display = "none";
+
       fetch(readUrl)
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error("Data pipeline request dropped by script engine.");
+          return res.json();
+        })
         .then(data => {
-          // Logic to parse rows into your layout table engine...
-          console.log("Database entries retrieved:", data);
+          // Normalize both possible structural arrays returned from Google Sheet parsers
+          internalDataset = Array.isArray(data) ? data : (data.data || []);
+          renderTableData(internalDataset);
+          
+          loadingIndicator.style.display = "none";
+          recordsTable.style.display = "table";
+        })
+        .catch(err => {
+          console.error("Database fetch operation fault:", err);
+          loadingIndicator.textContent = "Failed to load database logs. Verify Google deployment connectivity parameters.";
         });
+    }
+
+    function renderTableData(rows, searchTerm = "") {
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = "";
+
+      if (rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; color:#94a3b8; padding:30px;">No diagnostic records match the active parameter queries.</td></tr>`;
+        return;
+      }
+
+      rows.forEach((row, index) => {
+        const tr = document.createElement("tr");
+
+        // Dynamic highlight utility wrap closures inside functional loops
+        const highlight = (textField) => {
+          if (!textField) return "";
+          const str = textField.toString();
+          if (!searchTerm) return str;
+          
+          const escapeRegExp = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          const regex = new RegExp(`(${escapeRegExp})`, "gi");
+          return str.replace(regex, "<mark>$1</mark>");
+        };
+
+        tr.innerHTML = `
+          <td class="sno-cell">${index + 1}</td>
+          <td>${highlight(row["Sample Entry Date"] || row["date"])}</td>
+          <td>${highlight(row["Collection Date"] || row["collectionDate"])}</td>
+          <td>${highlight(row["Test name"] || row["testName"])}</td>
+          <td>
+            <span class="tracking-link" onclick="openModal(${index})">
+              ${highlight(row["Patient name"] || row["patientName"] || "Unknown Target")}
+            </span>
+          </td>
+          <td>${highlight(row["Patient child name"] || row["childName"] || "-")}</td>
+          <td>${highlight(row["sample type"] || row["sampleType"])}</td>
+          <td>${highlight(row["Consent Received / Not"] || row["consent"])}</td>
+          <td>${highlight(row["Location"] || row["location"])}</td>
+          <td>${highlight(row["Invoice NO"] || row["invoiceNo"])}</td>
+          <td>${highlight(row["Tracking no"] || row["trackingNo"])}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterTable() {
+      const query = document.getElementById("searchInput").value.trim().toLowerCase();
+      if (!query) {
+        renderTableData(internalDataset);
+        return;
+      }
+
+      const matchingRecords = internalDataset.filter(row => {
+        return Object.values(row).some(value => 
+          value && value.toString().toLowerCase().includes(query)
+        );
+      });
+
+      renderTableData(matchingRecords, query);
+    }
+
+    function openModal(index) {
+      const record = internalDataset[index];
+      if (!record) return;
+
+      document.getElementById("modalPatientTitle").textContent = record["Patient name"] || record["patientName"] || "Record Specification";
+      
+      let summaryHtml = "";
+      for (const [key, value] of Object.entries(record)) {
+        if(value) {
+          summaryHtml += `<p><strong>${key}:</strong> ${value}</p>`;
+        }
+      }
+
+      document.getElementById("modalContent").innerHTML = summaryHtml;
+      document.getElementById("patientModal").classList.add("active");
+    }
+
+    function closeModal(event, force = false) {
+      if (force || event.target === document.getElementById("patientModal")) {
+        document.getElementById("patientModal").classList.remove("active");
+      }
     }
   </script>
 </body>
