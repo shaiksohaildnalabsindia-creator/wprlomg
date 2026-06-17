@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Sample Verification Images</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .drop-zone { border: 3px dashed #cbd5e1; background: white; padding: 40px; text-align: center; border-radius: 12px; cursor: pointer; transition: background 0.2s; }
+    .drop-zone:hover { background: #f8fafc; border-color: #3b82f6; }
+  </style>
+</head>
+<body>
+
+  <div id="sidebar-injector"></div>
+
+  <main class="main-content" id="mainContent">
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <div>
+        <h1 style="font-size: 22px; font-weight: 700;">Upload Verification Imagery Data</h1>
+        <p style="font-size: 13px; color: #64748b;">Drag and drop multiple validation photos into the system</p>
+      </div>
+    </header>
+
+    <div class="drop-zone" id="dropZone" onclick="alert('File Explorer browser dialogue invocation.');">
+      <div style="font-size: 48px; margin-bottom: 10px;">📸</div>
+      <p style="font-weight: 600; color: #334155;">Drag & Drop package confirmation imagery files here</p>
+      <p style="font-size: 12px; color: #64748b; margin-top: 5px;">Supports PNG, JPEG up to 15MB configurations per file matrix</p>
+    </div>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/app-core.js"></script>
+</body>
+</html>
